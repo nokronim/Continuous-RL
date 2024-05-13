@@ -471,33 +471,33 @@ print(f"Your score: {score}")
 print("Well done!")
 
 
-from gymnasium.wrappers import RecordVideo
+# from gymnasium.wrappers import RecordVideo
 
-# let's hope this will work
-# don't forget to pray
-with gym.make(env_name, render_mode="rgb_array") as env, RecordVideo(
-    env=env, video_folder="./videos"
-) as env_monitor:
-    # note that t_max is 300, so collected reward will be smaller than 1000
-    evaluate(env_monitor, actor, n_games=1, t_max=300)
-
-
-# Show video. This may not work in some setups. If it doesn't
-# work for you, you can download the videos and view them locally.
-
-from pathlib import Path
-from base64 import b64encode
-from IPython.display import HTML
-import sys
-
-video_paths = sorted([s for s in Path('videos').iterdir() if s.suffix == '.mp4'])
-video_path = video_paths[0]  # You can also try other indices
+# # let's hope this will work
+# # don't forget to pray
+# with gym.make(env_name, render_mode="rgb_array") as env, RecordVideo(
+#     env=env, video_folder="./videos"
+# ) as env_monitor:
+#     # note that t_max is 300, so collected reward will be smaller than 1000
+#     evaluate(env_monitor, actor, n_games=1, t_max=300)
 
 
-data_url = str(video_path)
+# # Show video. This may not work in some setups. If it doesn't
+# # work for you, you can download the videos and view them locally.
 
-HTML("""
-<video width="640" height="480" controls>
-  <source src="{}" type="video/mp4">
-</video>
-""".format(data_url))
+# from pathlib import Path
+# from base64 import b64encode
+# from IPython.display import HTML
+# import sys
+
+# video_paths = sorted([s for s in Path('videos').iterdir() if s.suffix == '.mp4'])
+# video_path = video_paths[0]  # You can also try other indices
+
+
+# data_url = str(video_path)
+
+# HTML("""
+# <video width="640" height="480" controls>
+#   <source src="{}" type="video/mp4">
+# </video>
+# """.format(data_url))
