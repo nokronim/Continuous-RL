@@ -294,7 +294,6 @@ alpha=0.1                     # temperature for SAC
 # iterations passed
 n_iterations = 1000
 
-
 exp_replay = ReplayBuffer(max_buffer_size)
 
 
