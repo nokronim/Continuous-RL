@@ -1,0 +1,57 @@
+repos:
+
+- repo: https://github.com/pre-commit/mirrors-isort
+  rev: v5.10.1
+  hooks:
+    - id: isort
+      args: ["--profile", "black"]
+
+- repo: https://github.com/psf/black
+  rev: 23.10.0
+  hooks:
+    - id: black
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+    - id: flake8
+      args: ["--ignore", "E501,W503"]
+    - id: check-json
+    - id: check-yaml
+    - id: name-tests-test
+      args: ['--django']
+    - id: debug-statements
+    - id: end-of-file-fixer
+      types: [python]
+#    - id: no-commit-to-branch
+#      args: ["--branch", "master", "--branch", "main"]
+    - id: trailing-whitespace
+    - id: check-docstring-first
+    - id: requirements-txt-fixer
+    - id: check-added-large-files
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.6.1
+  hooks:
+    - id: mypy
+
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 1.7.0
+  hooks:
+    - id: nbqa-isort
+    - id: nbqa-black
+    - id: nbqa-flake8
+      args: ["--ignore=E501,E402"]
+    - id: nbqa-mypy
+      args: ["--ignore-missing-imports"]
+    - id: nbqa-pylint
+      args: ["--disable=E0401,C0413,C0114,C0301"]
+
+#- repo: local
+#  hooks:
+#    - id: unittest
+#      name: unittest
+#      entry: python -m unittest discover
+#      language: python
+#      always_run: true
+#      pass_filenames: false
