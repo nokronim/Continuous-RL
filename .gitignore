@@ -1,0 +1,6 @@
+events*
+models/
+outputs/
+__pycache__/
+logs/
+*.ipynb

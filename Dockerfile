@@ -22,7 +22,7 @@ RUN apt-get -y update \
     libosmesa6-dev \
     libglew-dev \
     xvfb \
-    swig \ 
+    swig \
     patchelf \
     ffmpeg cmake \
     && apt-get autoremove -y \
@@ -32,9 +32,5 @@ RUN apt-get -y update \
     && cd /root/.mujoco \
     && wget -qO- 'https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz' | tar -xzvf -
 
-ENV DISPLAY :10
-ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ENV LD_PRELOAD="$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/libGLEW.so"
 ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/root/.mujoco/mujoco210/bin"
-
-# ENTRYPOINT ["poetry", "run", "python3", "main.py"]
