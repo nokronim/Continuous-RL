@@ -20,4 +20,5 @@ docker build -t mujoco_td3 .
 
 docker run -it mujoco_td3
 ```
+
 Made with the assistance of https://github.com/daniyalaliev
