@@ -14,7 +14,7 @@ train:
     seed: 42
     models_path: "./models"
 
-inference:
+evaluate:
     test_batch_size: 10
     no_cuda: False
     seed: 1

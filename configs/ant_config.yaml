@@ -9,12 +9,12 @@ train:
     tau: 0.005  # speed of updating target networks
     policy_update_freq: 2  # frequency of actor update; vanilla choice is 2 for TD3 or 1 for SAC
     alpha: 0.1  # temperature for SAC
-    iterations: 1000
+    iterations: 300000
     n_iterations: 1000
     seed: 42
     models_path: "./models"
 
-inference:
+evaluate:
     test_batch_size: 10
     no_cuda: False
     seed: 1

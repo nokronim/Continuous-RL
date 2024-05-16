@@ -92,18 +92,14 @@ class TD3_Actor(nn.Module):
         output:
             actions - PyTorch tensor, (batch_size x actions_dim)
         """
-        # no gradient computation is required here since we will use this only for interaction
         with torch.no_grad():
-            # states = torch.from_numpy(states).to(DEVICE).float()
             states = states.float()
             hidden_states = self.extract_features(states)
             policy = self.forward_policy(hidden_states)
-            # clipped_noise = torch.empty(self.action_dim).normal_(mean=0, std=std_noise)
             distribution = torch.distributions.normal.Normal(
                 loc=torch.tensor([0.0]), scale=torch.tensor([std_noise])
             )
             sampled_noise = distribution.rsample(policy.size()).squeeze().to(device)
             clipped_noise = sampled_noise.clamp(-clip_eta, clip_eta).to(device)
             actions = policy + clipped_noise
-            # actions can fly out of [-1, 1] range after added noise
             return actions.clamp(-1, 1)
