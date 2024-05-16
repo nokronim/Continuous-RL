@@ -1,5 +1,4 @@
 # Continuous-RL
-Made with the assistance of https://github.com/daniyalaliev
 
 RL applied for MuJoCO environments with continuous action space
 
@@ -21,3 +20,4 @@ docker build -t mujoco_td3 .
 
 docker run -it mujoco_td3
 ```
+Made with the assistance of https://github.com/daniyalaliev
