@@ -1,6 +1,8 @@
 # Continius-RL
 RL applied for MuJoCO environments with continuous action space 
 
+![]([name-of-giphy.gif](https://github.com/nokronim/Continius-RL/blob/main/rl-video-episode-0.gif))
+
 # Poetry setup
 ```
 poetry shell
