@@ -30,10 +30,6 @@ class ReplayBuffer:
         Make sure, FIFO rule is being followed: the oldest examples has to be removed earlier
         """
         data = (obs_t, action, reward, obs_tp1, done)
-        storage = self._storage
-        maxsize = self._maxsize
-
-        data = (obs_t, action, reward, obs_tp1, done)
 
         if self._next_idx >= len(self._storage):
             self._storage.append(data)
@@ -61,7 +57,6 @@ class ReplayBuffer:
             done_mask[i] = 1 if executing act_batch[i] resulted in
             the end of an episode and 0 otherwise.
         """
-        storage = self._storage
         # randomly generate batch_size integers
         # to be used as indexes of samples
         idxes = [random.randint(0, len(self._storage) - 1) for _ in range(batch_size)]
