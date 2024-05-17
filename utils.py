@@ -46,7 +46,7 @@ def optimize(env, name, model, optimizer, loss, max_grad_norm, n_iterations):
 
 
 def compute_critic_target(
-    target_actor, target_critic1, target_critic2, rewards, next_states, is_done
+    target_actor, target_critic1, target_critic2, rewards, next_states, gamma, is_done
 ):
     """
     Important: use target networks for this method! Do not use "fresh" models except fresh policy in SAC!
@@ -57,7 +57,6 @@ def compute_critic_target(
     output:
         critic target - PyTorch tensor, (batch_size)
     """
-    gamma = 0.997
     with torch.no_grad():
         critic_target = rewards + gamma * (1 - is_done) * torch.min(
             target_critic1.get_qvalues(

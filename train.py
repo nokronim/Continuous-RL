@@ -24,6 +24,7 @@ class Trainer:
     def __init__(self, cfg):
         self.cfg = cfg
 
+
     def train(self):
         env_name = self.cfg.env_name
 
@@ -136,6 +137,7 @@ class Trainer:
                     target_critic2,
                     rewards,
                     next_states,
+                    self.cfg.gamma,
                     is_done,
                 )
             ) ** 2
@@ -157,6 +159,7 @@ class Trainer:
                     target_critic2,
                     rewards,
                     next_states,
+                    self.cfg.gamma,
                     is_done,
                 )
             ) ** 2
@@ -190,10 +193,10 @@ class Trainer:
                     actor, target_actor, self.cfg.tau
                 )  # comment this line if you chose SAC
 
-        if not os.path.exists(self.cfg.models_path):
-            os.makedirs(self.cfg.models_path)
+        if not os.path.exists(self.cfg.model_save_path):
+            os.makedirs(self.cfg.model_save_path)
         PATH = (
-            self.cfg.models_path
+            self.cfg.model_save_path
             + "/actor_"
             + str(self.cfg.iterations)
             + "_"
@@ -206,7 +209,7 @@ class Trainer:
 
 @hydra.main(config_path="configs", config_name="cheetah_config", version_base="1.3.2")
 def main(cfg):
-    trainer = Trainer(cfg.train)
+    trainer = Trainer(cfg)
     trainer.train()
 
 
