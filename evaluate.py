@@ -1,18 +1,21 @@
-from pathlib import Path
+import time
 
 import gymnasium as gym
 import hydra
 import numpy as np
 import torch
 from gymnasium.wrappers import RecordVideo
-from IPython.display import HTML
 
 
 class Evaluator:
     def __init__(self, cfg):
         self.cfg = cfg
         self.env = gym.make(self.cfg.env_name, render_mode="rgb_array")
-        self.actor = torch.load(self.cfg.model_load_path)
+
+        if self.cfg.model_load_path is not None:
+            self.actor = torch.load(self.cfg.model_load_path)
+        else:
+            raise ValueError("Please, set model_load_path for evaluation")
 
     def evaluate(self, n_games=1, t_max=1000):
         """
@@ -45,26 +48,13 @@ class Evaluator:
 
     def visualise(self):
         with gym.make(self.cfg.env_name, render_mode="rgb_array") as env, RecordVideo(
-            env=env, video_folder="./videos"
+            env=env,
+            video_folder="./videos",
+            name_prefix=self.cfg.env_name + "_" + str(time.time()),
         ) as env_monitor:
             self.env = env_monitor
             # note that t_max is 300, so collected reward will be smaller than 1000
             self.evaluate(n_games=1, t_max=300)
-
-        video_paths = sorted(
-            [s for s in Path("videos").iterdir() if s.suffix == ".mp4"]
-        )
-        video_path = video_paths[0]  # You can also try other indices
-
-        data_url = str(video_path) + "_" + self.cfg.env_name
-
-        HTML(
-            f"""
-            <video width="480" height="480" controls>
-            <source src="{data_url}" type="video/mp4">
-            </video>
-            """
-        )
 
 
 @hydra.main(config_path="configs", config_name="cheetah_config", version_base="1.3.2")
