@@ -52,19 +52,17 @@ class Trainer:
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
         # iterations passed
-        n_iterations = 1000
-
         exp_replay = ReplayBuffer(self.cfg.max_buffer_size)
 
         # models to train
-        actor = TD3_Actor(state_dim, action_dim).to(DEVICE)
+        actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, DEVICE).to(DEVICE)
         critic1 = Critic(state_dim, action_dim).to(DEVICE)
         critic2 = Critic(state_dim, action_dim).to(DEVICE)
 
         # target networks: slow-updated copies of actor and two critics
         target_critic1 = Critic(state_dim, action_dim).to(DEVICE)
         target_critic2 = Critic(state_dim, action_dim).to(DEVICE)
-        target_actor = TD3_Actor(state_dim, action_dim).to(
+        target_actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, DEVICE).to(
             DEVICE
         )  # comment this line if you chose SAC
 
@@ -98,7 +96,6 @@ class Trainer:
                     random_actor,
                     env,
                     exp_replay,
-                    DEVICE,
                     self.cfg.timesteps_per_epoch,
                 )
                 continue
@@ -109,7 +106,6 @@ class Trainer:
                 actor,
                 env,
                 exp_replay,
-                DEVICE,
                 self.cfg.timesteps_per_epoch,
             )
 
@@ -137,7 +133,6 @@ class Trainer:
                     rewards,
                     next_states,
                     is_done,
-                    DEVICE,
                 )
             ) ** 2
             optimize(
@@ -159,7 +154,6 @@ class Trainer:
                     rewards,
                     next_states,
                     is_done,
-                    DEVICE,
                 )
             ) ** 2
             optimize(

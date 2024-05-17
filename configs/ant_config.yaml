@@ -1,10 +1,11 @@
 train:
     env_name: "Ant-v4"
     gamma: 0.99  # discount factor
-    max_buffer_size: 1.0e+05 # size of experience replay
+    max_buffer_size: 100000 # size of experience replay
     start_timesteps: 5000  # size of experience replay when start training
     timesteps_per_epoch: 1  # steps in environment per step of network updates
     batch_size: 4096  # batch size for all optimizations
+    hidden_size: 512
     max_grad_norm: 10  # max grad norm for all optimizations
     tau: 0.005  # speed of updating target networks
     policy_update_freq: 2  # frequency of actor update; vanilla choice is 2 for TD3 or 1 for SAC

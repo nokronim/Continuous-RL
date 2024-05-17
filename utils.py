@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-def play_and_record(initial_state, agent, env, exp_replay, device, n_steps=1):
+def play_and_record(initial_state, agent, env, exp_replay, n_steps=1):
     """
     Play the game for exactly n steps, record every (s,a,r,s', done) to replay buffer.
     Whenever game ends, add record with done=True and reset the game.
@@ -16,7 +16,7 @@ def play_and_record(initial_state, agent, env, exp_replay, device, n_steps=1):
     # Play the game for n_steps as per instructions above
     for t in range(n_steps):
         # select action using policy with exploration
-        a = agent.get_action(states=s, device=device)
+        a = agent.get_action(states=s)
 
         ns, r, terminated, truncated, _ = env.step(a)
 
@@ -46,7 +46,7 @@ def optimize(env, name, model, optimizer, loss, max_grad_norm, n_iterations):
 
 
 def compute_critic_target(
-    target_actor, target_critic1, target_critic2, rewards, next_states, is_done, device
+    target_actor, target_critic1, target_critic2, rewards, next_states, is_done
 ):
     """
     Important: use target networks for this method! Do not use "fresh" models except fresh policy in SAC!
@@ -62,11 +62,11 @@ def compute_critic_target(
         critic_target = rewards + gamma * (1 - is_done) * torch.min(
             target_critic1.get_qvalues(
                 next_states,
-                target_actor.get_target_action(states=next_states, device=device),
+                target_actor.get_target_action(states=next_states),
             ),
             target_critic2.get_qvalues(
                 next_states,
-                target_actor.get_target_action(states=next_states, device=device),
+                target_actor.get_target_action(states=next_states),
             ),
         )
 
