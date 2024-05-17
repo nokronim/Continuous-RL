@@ -2,8 +2,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-
 
 class RandomActor:
     def __init__(self, env):
