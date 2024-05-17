@@ -16,9 +16,9 @@ poetry run python3 main.py --config-name "<your_config>"
 
 # Docker usage
 ```
-docker build -t mujoco_td3 .
+docker build -t continuous_rl .
 
-docker run -it mujoco_td3
+docker run -it continuous_rl
 ```
 ## Acknowledgement
 Made with the assistance of https://github.com/daniyalaliev
