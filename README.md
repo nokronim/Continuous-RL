@@ -14,7 +14,7 @@ poetry install
 ```
 
 ```bash
-poetry run python3 main.py --config-name "<your_config>"
+poetry run python3 train.py --config-name "<your_config>"
 ```
 
 # Docker usage
