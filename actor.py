@@ -100,7 +100,9 @@ class TD3_Actor(nn.Module):
             distribution = torch.distributions.normal.Normal(
                 loc=torch.tensor([0.0]), scale=torch.tensor([std_noise])
             )
-            sampled_noise = distribution.rsample(policy.size()).squeeze().to(self.device)
+            sampled_noise = (
+                distribution.rsample(policy.size()).squeeze().to(self.device)
+            )
             clipped_noise = sampled_noise.clamp(-clip_eta, clip_eta).to(self.device)
             actions = policy + clipped_noise
             return actions.clamp(-1, 1)

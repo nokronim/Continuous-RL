@@ -55,14 +55,18 @@ class Trainer:
         exp_replay = ReplayBuffer(self.cfg.max_buffer_size)
 
         # models to train
-        actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, DEVICE).to(DEVICE)
+        actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, DEVICE).to(
+            DEVICE
+        )
         critic1 = Critic(state_dim, action_dim).to(DEVICE)
         critic2 = Critic(state_dim, action_dim).to(DEVICE)
 
         # target networks: slow-updated copies of actor and two critics
         target_critic1 = Critic(state_dim, action_dim).to(DEVICE)
         target_critic2 = Critic(state_dim, action_dim).to(DEVICE)
-        target_actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, DEVICE).to(
+        target_actor = TD3_Actor(
+            state_dim, action_dim, self.cfg.hidden_size, DEVICE
+        ).to(
             DEVICE
         )  # comment this line if you chose SAC
 
