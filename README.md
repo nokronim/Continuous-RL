@@ -11,7 +11,7 @@ poetry shell
 poetry install
 
 # set <your_config> in configs directory
-poetry run python3 main.py --config_name "<your_config>"
+poetry run python3 main.py --config-name "<your_config>"
 ```
 
 # Docker usage
