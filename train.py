@@ -25,7 +25,7 @@ class Trainer:
         self.cfg = cfg
 
     def train(self):
-        env_name = "HalfCheetah-v4"
+        env_name = self.cfg.env_name
 
         env = gym.make(env_name, render_mode="rgb_array")
 
