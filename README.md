@@ -14,8 +14,14 @@ poetry shell
 poetry install
 ```
 
+### training
 ```bash
 poetry run python3 train.py --config-name "<your_config>"
+```
+
+### evaluation
+```bash
+poetry run python3 evaluate.py --config-name "<your_config>"
 ```
 
 # Docker usage
