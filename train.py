@@ -58,9 +58,9 @@ class Trainer:
         exp_replay = ReplayBuffer(self.cfg.max_buffer_size)
 
         # models to train
-        actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, action_lim, DEVICE).to(
-            DEVICE
-        )
+        actor = TD3_Actor(
+            state_dim, action_dim, self.cfg.hidden_size, action_lim, DEVICE
+        ).to(DEVICE)
         critic1 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
         critic2 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
 

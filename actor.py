@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 
 
-
 class RandomActor:
     def __init__(self, env):
         self.env = env
@@ -65,7 +64,9 @@ class TD3_Actor(nn.Module):
             noise = distribution.rsample(policy.size()).squeeze().to(self.device)
             noised_policy = policy + noise
             actions = np.clip(
-                noised_policy.cpu().detach().numpy(), self.action_lim[0], self.action_lim[1]
+                noised_policy.cpu().detach().numpy(),
+                self.action_lim[0],
+                self.action_lim[1],
             )
 
             assert isinstance(
