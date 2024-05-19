@@ -28,18 +28,20 @@ class Trainer:
         env_name = self.cfg.env_name
 
         env = gym.make(env_name, render_mode="rgb_array")
+        # self.cfg.action_limit_high = int(env.action_space.high[0])
+        # self.cfg.action_limit_low = int(env.action_space.low[0])
 
         # we want to look inside
         env.reset()
 
-        # examples of states and actions
-        print(
-            "observation space: ",
-            env.observation_space,
-            "\nobservations:",
-            env.reset()[0],
-        )
-        print("action space: ", env.action_space)
+        # # examples of states and actions
+        # print(
+        #     "observation space: ",
+        #     env.observation_space,
+        #     "\nobservations:",
+        #     env.reset()[0],
+        # )
+        # print("action space: ", env.action_space)
 
         env = gym.make(env_name, render_mode="rgb_array")
         env = Summaries(env, env_name)
@@ -48,6 +50,7 @@ class Trainer:
             0
         ]  # dimension of state space (27 numbers)
         action_dim = env.action_space.shape[0]  # dimension of action space (8 numbers)
+        action_lim = (env.action_space.low[0], env.action_space.high[0])
 
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -55,17 +58,17 @@ class Trainer:
         exp_replay = ReplayBuffer(self.cfg.max_buffer_size)
 
         # models to train
-        actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, DEVICE).to(
+        actor = TD3_Actor(state_dim, action_dim, self.cfg.hidden_size, action_lim, DEVICE).to(
             DEVICE
         )
-        critic1 = Critic(state_dim, action_dim).to(DEVICE)
-        critic2 = Critic(state_dim, action_dim).to(DEVICE)
+        critic1 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
+        critic2 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
 
         # target networks: slow-updated copies of actor and two critics
-        target_critic1 = Critic(state_dim, action_dim).to(DEVICE)
-        target_critic2 = Critic(state_dim, action_dim).to(DEVICE)
+        target_critic1 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
+        target_critic2 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
         target_actor = TD3_Actor(
-            state_dim, action_dim, self.cfg.hidden_size, DEVICE
+            state_dim, action_dim, self.cfg.hidden_size, action_lim, DEVICE
         ).to(
             DEVICE
         )  # comment this line if you chose SAC
@@ -194,7 +197,7 @@ class Trainer:
 
         if not os.path.exists(self.cfg.model_save_path):
             os.makedirs(self.cfg.model_save_path)
-        PATH = (
+        path = (
             self.cfg.model_save_path
             + "/actor_"
             + str(self.cfg.iterations)
@@ -203,7 +206,7 @@ class Trainer:
             + "_"
             + str(time.time())
         )
-        torch.save(actor, PATH)
+        torch.save(actor, path)
 
 
 @hydra.main(config_path="configs", config_name="cheetah_config", version_base="1.3.2")

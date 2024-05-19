@@ -54,7 +54,7 @@ class Evaluator:
         ) as env_monitor:
             self.env = env_monitor
             # note that t_max is 300, so collected reward will be smaller than 1000
-            self.evaluate(n_games=1, t_max=300)
+            self.evaluate(n_games=5, t_max=1000)
 
 
 @hydra.main(config_path="configs", config_name="cheetah_config", version_base="1.3.2")

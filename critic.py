@@ -3,10 +3,10 @@ import torch.nn as nn
 
 
 class Critic(nn.Module):
-    def __init__(self, state_dim, action_dim):
+    def __init__(self, state_dim, action_dim, hidden_size):
         super().__init__()
 
-        self.hidden_size = 512
+        self.hidden_size = hidden_size
 
         self.extract_features = nn.Sequential(
             nn.Linear(

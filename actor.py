@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 
 
+
 class RandomActor:
     def __init__(self, env):
         self.env = env
@@ -12,13 +13,24 @@ class RandomActor:
         return self.env.action_space.sample()
 
 
+class Multiply(nn.Module):
+    def __init__(self, alpha):
+        super().__init__()
+        self.alpha = alpha
+
+    def forward(self, x):
+        x = torch.mul(x, self.alpha)
+        return x
+
+
 class TD3_Actor(nn.Module):
-    def __init__(self, state_dim, action_dim, hidden_size, device):
+    def __init__(self, state_dim, action_dim, hidden_size, action_lim, device):
         super().__init__()
 
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.hidden_size = hidden_size
+        self.action_lim = action_lim
         self.device = device
 
         self.extract_features = nn.Sequential(
@@ -30,6 +42,7 @@ class TD3_Actor(nn.Module):
             nn.ReLU(),
             nn.Linear(in_features=self.hidden_size, out_features=self.action_dim),
             nn.Tanh(),
+            Multiply(self.action_lim[1]),
         )
 
     def get_action(self, states, std_noise=0.1):
@@ -51,14 +64,16 @@ class TD3_Actor(nn.Module):
             )
             noise = distribution.rsample(policy.size()).squeeze().to(self.device)
             noised_policy = policy + noise
-            actions = np.clip(noised_policy.cpu().detach().numpy(), -1, 1)
+            actions = np.clip(
+                noised_policy.cpu().detach().numpy(), self.action_lim[0], self.action_lim[1]
+            )
 
             assert isinstance(
                 actions, (list, np.ndarray)
             ), "convert actions to numpy to send into env"
-            assert (
-                actions.max() <= 1.0 and actions.min() >= -1
-            ), "actions must be in the range [-1, 1]"
+            # assert (
+            #     abs(actions.max() - action_lim) < 1e-1 and  abs(actions.min() + action_lim) < 1e-1
+            # ), "actions must be in the range [-1, 1]"
             return actions
 
     def get_best_action(self, states):
@@ -103,4 +118,4 @@ class TD3_Actor(nn.Module):
             )
             clipped_noise = sampled_noise.clamp(-clip_eta, clip_eta).to(self.device)
             actions = policy + clipped_noise
-            return actions.clamp(-1, 1)
+            return actions.clamp(self.action_lim[0], self.action_lim[1])
