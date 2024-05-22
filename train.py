@@ -69,16 +69,12 @@ class Trainer:
         target_critic2 = Critic(state_dim, action_dim, self.cfg.hidden_size).to(DEVICE)
         target_actor = TD3_Actor(
             state_dim, action_dim, self.cfg.hidden_size, action_lim, DEVICE
-        ).to(
-            DEVICE
-        )  
+        ).to(DEVICE)
 
         # initialize them as copies of original models
         target_critic1.load_state_dict(critic1.state_dict())
         target_critic2.load_state_dict(critic2.state_dict())
-        target_actor.load_state_dict(
-            actor.state_dict()
-        )  
+        target_actor.load_state_dict(actor.state_dict())
 
         # optimizers: for every model
         opt_actor = torch.optim.Adam(actor.parameters(), lr=3e-4)
@@ -186,9 +182,7 @@ class Trainer:
 
                 update_target_networks(critic1, target_critic1, self.cfg.tau)
                 update_target_networks(critic2, target_critic2, self.cfg.tau)
-                update_target_networks(
-                    actor, target_actor, self.cfg.tau
-                )  
+                update_target_networks(actor, target_actor, self.cfg.tau)
 
         if not os.path.exists(self.cfg.model_save_path):
             os.makedirs(self.cfg.model_save_path)
