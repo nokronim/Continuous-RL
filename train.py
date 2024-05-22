@@ -28,33 +28,14 @@ class Trainer:
         env_name = self.cfg.env_name
 
         env = gym.make(env_name, render_mode="rgb_array")
-        # self.cfg.action_limit_high = int(env.action_space.high[0])
-        # self.cfg.action_limit_low = int(env.action_space.low[0])
-
-        # we want to look inside
-        env.reset()
-
-        # # examples of states and actions
-        # print(
-        #     "observation space: ",
-        #     env.observation_space,
-        #     "\nobservations:",
-        #     env.reset()[0],
-        # )
-        # print("action space: ", env.action_space)
-
-        env = gym.make(env_name, render_mode="rgb_array")
         env = Summaries(env, env_name)
 
-        state_dim = env.observation_space.shape[
-            0
-        ]  # dimension of state space (27 numbers)
-        action_dim = env.action_space.shape[0]  # dimension of action space (8 numbers)
+        state_dim = env.observation_space.shape[0]  
+        action_dim = env.action_space.shape[0]  
         action_lim = (env.action_space.low[0], env.action_space.high[0])
 
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # iterations passed
         exp_replay = ReplayBuffer(self.cfg.max_buffer_size)
 
         # models to train
@@ -82,7 +63,7 @@ class Trainer:
         opt_critic2 = torch.optim.Adam(critic2.parameters(), lr=3e-4)
 
         np.random.seed(self.cfg.seed)
-        # env.unwrapped.seed(seed)
+        env.unwrapped.seed(self.cfg.seed)
         torch.manual_seed(self.cfg.seed)
 
         interaction_state, _ = env.reset(seed=self.cfg.seed)
