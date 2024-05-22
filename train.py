@@ -30,8 +30,8 @@ class Trainer:
         env = gym.make(env_name, render_mode="rgb_array")
         env = Summaries(env, env_name)
 
-        state_dim = env.observation_space.shape[0]  
-        action_dim = env.action_space.shape[0]  
+        state_dim = env.observation_space.shape[0]
+        action_dim = env.action_space.shape[0]
         action_lim = (env.action_space.low[0], env.action_space.high[0])
 
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
