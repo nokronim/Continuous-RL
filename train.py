@@ -71,16 +71,16 @@ class Trainer:
             state_dim, action_dim, self.cfg.hidden_size, action_lim, DEVICE
         ).to(
             DEVICE
-        )  # comment this line if you chose SAC
+        )  
 
         # initialize them as copies of original models
         target_critic1.load_state_dict(critic1.state_dict())
         target_critic2.load_state_dict(critic2.state_dict())
         target_actor.load_state_dict(
             actor.state_dict()
-        )  # comment this line if you chose SAC
+        )  
 
-        # optimizers: for every model we have
+        # optimizers: for every model
         opt_actor = torch.optim.Adam(actor.parameters(), lr=3e-4)
         opt_critic1 = torch.optim.Adam(critic1.parameters(), lr=3e-4)
         opt_critic2 = torch.optim.Adam(critic2.parameters(), lr=3e-4)
@@ -95,8 +95,7 @@ class Trainer:
         for n_iterations in trange(
             0, self.cfg.iterations, self.cfg.timesteps_per_epoch
         ):
-            # if experience replay is small yet, no training happens
-            # we also collect data using random policy to collect more diverse starting data
+            # collect data using random policy to collect more diverse starting data
             if len(exp_replay) < self.cfg.start_timesteps:
                 _, interaction_state = play_and_record(
                     interaction_state,
@@ -107,7 +106,6 @@ class Trainer:
                 )
                 continue
 
-            # perform a step in environment and store it in experience replay
             _, interaction_state = play_and_record(
                 interaction_state,
                 actor,
@@ -116,12 +114,10 @@ class Trainer:
                 self.cfg.timesteps_per_epoch,
             )
 
-            # sample a batch from experience replay
             states, actions, rewards, next_states, is_done = exp_replay.sample(
                 self.cfg.batch_size
             )
 
-            # move everything to PyTorch tensors
             states = torch.tensor(states, device=DEVICE, dtype=torch.float)
             actions = torch.tensor(actions, device=DEVICE, dtype=torch.float)
             rewards = torch.tensor(rewards, device=DEVICE, dtype=torch.float)
@@ -130,7 +126,6 @@ class Trainer:
                 is_done.astype("float32"), device=DEVICE, dtype=torch.float
             )
 
-            # losses
             critic1_loss = (
                 critic1.get_qvalues(states, actions)
                 - compute_critic_target(
@@ -143,6 +138,7 @@ class Trainer:
                     is_done,
                 )
             ) ** 2
+
             optimize(
                 env,
                 "critic1",
@@ -165,6 +161,7 @@ class Trainer:
                     is_done,
                 )
             ) ** 2
+
             optimize(
                 env,
                 "critic2",
@@ -175,7 +172,6 @@ class Trainer:
                 n_iterations,
             )
 
-            # actor update is less frequent in TD3
             if n_iterations % self.cfg.policy_update_freq == 0:
                 actor_loss = compute_actor_loss(actor, target_critic1, states)
                 optimize(
@@ -188,12 +184,11 @@ class Trainer:
                     n_iterations,
                 )
 
-                # update target networks
                 update_target_networks(critic1, target_critic1, self.cfg.tau)
                 update_target_networks(critic2, target_critic2, self.cfg.tau)
                 update_target_networks(
                     actor, target_actor, self.cfg.tau
-                )  # comment this line if you chose SAC
+                )  
 
         if not os.path.exists(self.cfg.model_save_path):
             os.makedirs(self.cfg.model_save_path)
@@ -201,8 +196,6 @@ class Trainer:
             self.cfg.model_save_path
             + "/actor_"
             + str(self.cfg.iterations)
-            + "_"
-            + str(self.cfg.batch_size)
             + "_"
             + str(time.time())
         )
