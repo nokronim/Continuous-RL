@@ -4,6 +4,7 @@ RL applied for MuJoCO environments with continuous action space
 
 ![ant](https://github.com/nokronim/Continius-RL/blob/main/assets/ant.gif)
 ![half-cheetah](https://github.com/nokronim/Continius-RL/blob/main/assets/half-cheetah.gif)
+![walker](https://github.com/nokronim/Continius-RL/blob/main/assets/walker.gif)
 
 # Poetry setup
 
