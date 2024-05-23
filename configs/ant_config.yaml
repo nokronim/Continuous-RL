@@ -14,4 +14,4 @@ alpha: 0.1
 iterations: 1000000
 seed: 42
 model_save_path: "./models"
-model_load_path: "/media/aznaur/311BBF169A1AA3E4/mnt/git/rl/models/actor_1_4096_1715961598.514517" # necessary for evaluation
+model_load_path: null # necessary path for evaluation
