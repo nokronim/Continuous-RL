@@ -21,13 +21,6 @@ class Critic(nn.Module):
         )
 
     def get_qvalues(self, states, actions):
-        """
-        input:
-            states - tensor, (batch_size x features)
-            actions - tensor, (batch_size x actions_dim)
-        output:
-            qvalues - tensor, critic estimation, (batch_size)
-        """
         concatenated_tensor = torch.cat([states, actions], dim=-1)
         hidden_states = self.extract_features(concatenated_tensor)
         qvalues = self.forward_q_values(hidden_states)
