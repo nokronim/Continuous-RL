@@ -12,4 +12,4 @@ alpha: 0.1
 iterations: 500000
 seed: 42
 model_save_path: "./models"
-model_load_path: null # necessary for evaluation
+model_load_path: null # necessary path for evaluation
