@@ -46,14 +46,12 @@ class TD3_Actor(nn.Module):
 
     def get_action(self, states, std_noise=0.1):
         """
-        Used to collect data by interacting with environment,
-        so your have to add some noise to actions.
+        Used to collect data by interacting with environment
         input:
             states - numpy, (batch_size x features)
         output:
             actions - numpy, (batch_size x actions_dim)
         """
-        # no gradient computation is required here since we will use this only for interaction
         with torch.no_grad():
             states = torch.from_numpy(states).float().to(self.device)
             hidden_states = self.extract_features(states)
@@ -72,14 +70,11 @@ class TD3_Actor(nn.Module):
             assert isinstance(
                 actions, (list, np.ndarray)
             ), "convert actions to numpy to send into env"
-            # assert (
-            #     abs(actions.max() - action_lim) < 1e-1 and  abs(actions.min() + action_lim) < 1e-1
-            # ), "actions must be in the range [-1, 1]"
             return actions
 
     def get_best_action(self, states):
         """
-        Will be used to optimize actor. Requires differentiable w.r.t. parameters actions.
+        Used to optimize actor. Requires differentiable w.r.t. parameters actions.
         input:
             states - PyTorch tensor, (batch_size x features)
         output:
@@ -100,7 +95,7 @@ class TD3_Actor(nn.Module):
 
     def get_target_action(self, states, std_noise=0.2, clip_eta=0.5):
         """
-        Will be used to create target for critic optimization.
+        Used to create target for critic optimization.
         Returns actions with added "clipped noise".
         input:
             states - PyTorch tensor, (batch_size x features)
