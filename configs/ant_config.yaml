@@ -1,6 +1,4 @@
 env_name: "Ant-v4"
-action_limit_high: null
-action_limit_low: null
 gamma: 0.99
 max_buffer_size: 100000
 start_timesteps: 5000
