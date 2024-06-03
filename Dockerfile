@@ -9,7 +9,7 @@ ENV POETRY_NO_INTERACTION=1 \
 
 WORKDIR /app
 
-COPY main.py logger.py poetry.lock pyproject.toml ./
+COPY train.py evaluate.py logger.py poetry.lock pyproject.toml ./
 RUN touch README.md
 
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install --no-root
