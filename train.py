@@ -63,7 +63,6 @@ class Trainer:
         opt_critic2 = torch.optim.Adam(critic2.parameters(), lr=3e-4)
 
         np.random.seed(self.cfg.seed)
-        env.unwrapped.seed(self.cfg.seed)
         torch.manual_seed(self.cfg.seed)
 
         interaction_state, _ = env.reset(seed=self.cfg.seed)
