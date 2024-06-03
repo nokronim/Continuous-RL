@@ -58,9 +58,9 @@ class Trainer:
         target_actor.load_state_dict(actor.state_dict())
 
         # optimizers: for every model
-        opt_actor = torch.optim.Adam(actor.parameters(), lr=self.cfg.seed)
-        opt_critic1 = torch.optim.Adam(critic1.parameters(), lr=self.cfg.seed)
-        opt_critic2 = torch.optim.Adam(critic2.parameters(), lr=self.cfg.seed)
+        opt_actor = torch.optim.Adam(actor.parameters(), lr=self.cfg.lr)
+        opt_critic1 = torch.optim.Adam(critic1.parameters(), lr=self.cfg.lr)
+        opt_critic2 = torch.optim.Adam(critic2.parameters(), lr=self.cfg.lr)
 
         np.random.seed(self.cfg.seed)
         torch.manual_seed(self.cfg.seed)
