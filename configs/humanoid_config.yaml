@@ -6,6 +6,7 @@ timesteps_per_epoch: 1
 batch_size: 4096
 hidden_size: 512
 max_grad_norm: 10
+lr: 3.0e-4
 tau: 0.005
 policy_update_freq: 2
 alpha: 0.1
