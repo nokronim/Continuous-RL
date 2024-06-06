@@ -10,7 +10,7 @@ from tqdm import trange
 from actor import RandomActor, TD3_Actor
 from critic import Critic
 from logger import TensorboardSummaries as Summaries
-from replay_buffer import ReplayBuffer
+from replay_buffer import PrioritizedReplayBuffer
 from utils import (
     compute_actor_loss,
     compute_critic_target,
@@ -36,7 +36,7 @@ class Trainer:
 
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-        exp_replay = ReplayBuffer(self.cfg.max_buffer_size)
+        exp_replay = PrioritizedReplayBuffer(state_dim, action_dim, self.cfg.max_buffer_size)
 
         # models to train
         actor = TD3_Actor(
@@ -90,21 +90,19 @@ class Trainer:
                 self.cfg.timesteps_per_epoch,
             )
 
-            states, actions, rewards, next_states, is_done = exp_replay.sample(
+            batch, weights, tree_idxs = exp_replay.sample(
                 self.cfg.batch_size
             )
+            states, actions, rewards, next_states, is_done = batch
 
-            states = torch.tensor(states, device=DEVICE, dtype=torch.float)
-            actions = torch.tensor(actions, device=DEVICE, dtype=torch.float)
-            rewards = torch.tensor(rewards, device=DEVICE, dtype=torch.float)
-            next_states = torch.tensor(next_states, device=DEVICE, dtype=torch.float)
-            is_done = torch.tensor(
-                is_done.astype("float32"), device=DEVICE, dtype=torch.float
-            )
+            states = states.to(DEVICE)
+            actions = actions.to(DEVICE)
+            rewards = rewards.to(DEVICE)
+            next_states = next_states.to(DEVICE)
+            is_done = is_done.to(DEVICE)
+            weights = weights.to(DEVICE)
 
-            critic1_loss = (
-                critic1.get_qvalues(states, actions)
-                - compute_critic_target(
+            td1 = critic1.get_qvalues(states, actions) - compute_critic_target(
                     target_actor,
                     target_critic1,
                     target_critic2,
@@ -113,7 +111,9 @@ class Trainer:
                     self.cfg.gamma,
                     is_done,
                 )
-            ) ** 2
+
+            critic1_loss = (td1 ** 2) * weights
+            td1_error = torch.abs(td1)
 
             optimize(
                 env,
@@ -125,18 +125,18 @@ class Trainer:
                 n_iterations,
             )
 
-            critic2_loss = (
-                critic2.get_qvalues(states, actions)
-                - compute_critic_target(
-                    target_actor,
-                    target_critic1,
-                    target_critic2,
-                    rewards,
-                    next_states,
-                    self.cfg.gamma,
-                    is_done,
-                )
-            ) ** 2
+            td2 = critic2.get_qvalues(states, actions) - compute_critic_target(
+                target_actor,
+                target_critic1,
+                target_critic2,
+                rewards,
+                next_states,
+                self.cfg.gamma,
+                is_done,
+            )
+
+            critic2_loss = (td2 ** 2) * weights
+            td2_error = torch.abs(td2)
 
             optimize(
                 env,
@@ -159,7 +159,7 @@ class Trainer:
                     self.cfg.max_grad_norm,
                     n_iterations,
                 )
-
+                exp_replay.update_priorities(tree_idxs, td1_error.detach().cpu().numpy())
                 update_target_networks(critic1, target_critic1, self.cfg.tau)
                 update_target_networks(critic2, target_critic2, self.cfg.tau)
                 update_target_networks(actor, target_actor, self.cfg.tau)
